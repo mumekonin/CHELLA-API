@@ -8,13 +8,13 @@ import { User } from "../schemas/users.schema";
 import { CommonUtils } from "src/commons/utils";
 import * as bcrypt from "bcrypt";
 import { UserResponse } from "../responses/users.response";
-import { ref } from "process";
-
+import { ReferralService } from "src/referrals/services/referrales.service";
 @Injectable()
 export class UsersSrevice {
   constructor(
     @InjectModel(User.name)
-    private readonly userModel: Model<User>
+    private readonly userModel: Model<User>,
+    private readonly referralService: ReferralService
   ) { }
   // get a single user
   async getUserProfile(id: string) {
@@ -44,6 +44,17 @@ export class UsersSrevice {
     if (existingName) {
       throw new BadRequestException("user already exists with this username")
     }
+
+    let referringUser = null as any;
+
+    if (createUserDto.referredBy) {
+      referringUser = await this.userModel.findOne({ referralCode: createUserDto.referredBy });
+
+      if (!referringUser) {
+        throw new BadRequestException('Invalid referral code.');
+      }
+    }
+
     //hash password
     const hashedPwd = await bcrypt.hash(createUserDto.password, 10)
 
@@ -62,8 +73,7 @@ export class UsersSrevice {
           amount: refferingUser.amount + 20,
           totalReffered: refferingUser.totalEarned + 1
 
-        }
-        );
+        });
       }
     }
     // prepare an instance to save db
@@ -80,6 +90,20 @@ export class UsersSrevice {
 
     //save to db
     const savedUser = await newUser.save();
+
+    //! We will implement a code to increase amount for referering users
+    if (referringUser) {
+      await this.referralService.createReferralTracking(
+        referringUser._id.toString(),
+        savedUser._id.toString()
+      )
+
+      await this.userModel.findByIdAndUpdate(referringUser._id, {
+        totalEarned: referringUser.totalEarned + 20,
+        amount: referringUser.amount + 20,
+        totalReffered: referringUser.totalReffered + 1
+      });
+    }
 
     //map to our user response  interceptor
     const userResponse: UserResponse = {
@@ -152,40 +176,41 @@ export class UsersSrevice {
     }))
     return userResponse;
   }
-  async userLogin(logInDto:LogInDto){
+  async userLogin(logInDto: LogInDto) {
     const user = await this.userModel.findOne({
-      username:logInDto.username.toLowerCase()});
+      username: logInDto.username.toLowerCase()
+    });
 
-      if(!user){
-        throw new BadRequestException("invalid username provided");
-      }
-      //comperd password 
-      const isPwdMatch= await bcrypt.compare(logInDto.password, user.password);
-      if(!isPwdMatch){
-        throw new BadRequestException("incorrect password provided");
-      }
-    
-      const jwtData={
-        id:user._id.toString(),
-        fullname:user.fullName,
-        username:user.username
-      };
-      const generatedToken=CommonUtils.generateJwtToken(jwtData);
-      return{
-        assesToken:generatedToken,
+    if (!user) {
+      throw new BadRequestException("invalid username provided");
+    }
+    //comperd password 
+    const isPwdMatch = await bcrypt.compare(logInDto.password, user.password);
+    if (!isPwdMatch) {
+      throw new BadRequestException("incorrect password provided");
+    }
+
+    const jwtData = {
+      id: user._id.toString(),
+      fullname: user.fullName,
+      username: user.username
+    };
+    const generatedToken = CommonUtils.generateJwtToken(jwtData);
+    return {
+      assesToken: generatedToken,
     }
   }
-  
-   async getMyReferralCode(currentUser){
-     const user =await this.userModel.findById(currentUser.id);
-        if(!user){
-          throw new BadRequestException("user not found");
-        }
-             const userResponse:UserResponse={
-              referralCode:user.referralCode 
-        }
-        return userResponse
-      
-   }
+
+  async getMyReferralCode(currentUser) {
+    const user = await this.userModel.findById(currentUser.id);
+    if (!user) {
+      throw new BadRequestException("user not found");
+    }
+    const userResponse: UserResponse = {
+      referralCode: user.referralCode
+    }
+    return userResponse
+
+  }
 
 }
