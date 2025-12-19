@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Referral, ReferralSchema } from './schema/referrals.schema';
 import { ReferralService } from './services/referrales.service';
+import { ReferralsController } from './controllers/referrales.controller';
 
 @Module({
     imports: [
@@ -9,9 +10,8 @@ import { ReferralService } from './services/referrales.service';
         { name: Referral.name, schema: ReferralSchema }
       ]),
     ],
-  
     controllers: [
-  
+       ReferralsController
     ],
   
     providers: [

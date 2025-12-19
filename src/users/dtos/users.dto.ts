@@ -9,7 +9,7 @@ export class CreateUserDto {
   @IsString()
   password: string;
   @IsString()
-  referredBy: string;
+  referredBy?: string;
 }
 
 export class LogInDto {

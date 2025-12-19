@@ -35,7 +35,6 @@ export class UsersSrevice {
     }
     return userResponse;
   }
-
   async registerUser(createUserDto: CreateUserDto) {
     //check if the user exist
     const existingName = await this.userModel.findOne({
@@ -44,9 +43,7 @@ export class UsersSrevice {
     if (existingName) {
       throw new BadRequestException("user already exists with this username")
     }
-
     let referringUser = null as any;
-
     if (createUserDto.referredBy) {
       referringUser = await this.userModel.findOne({ referralCode: createUserDto.referredBy });
 
@@ -97,7 +94,6 @@ export class UsersSrevice {
         referringUser._id.toString(),
         savedUser._id.toString()
       )
-
       await this.userModel.findByIdAndUpdate(referringUser._id, {
         totalEarned: referringUser.totalEarned + 20,
         amount: referringUser.amount + 20,
