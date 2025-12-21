@@ -1,9 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Task, UserTask } from "../schemas/tasks.schema";
 import { Model } from "mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { TaskResponse } from "../responses/tasks.response";
+import { TaskResponse, UserCompleteTask } from "../responses/tasks.response";
+import { title } from "node:process";
 
 @Injectable()
 export class TaskService{
@@ -39,8 +40,7 @@ export class TaskService{
             await newTask.save();
         }
         console.log(`${tasksToCreate} tasks created for today.`);
-    }
-    
+    }    
     //fetch daily tasks 
     async getDailyTasks(){
         const today = new Date().toISOString().split('T')[0];
@@ -56,4 +56,34 @@ export class TaskService{
         }));
         return response;
     }
+    async completeTask(userId,taskId:string){
+        //check if the task is  exist
+        const task =await this.taskModel.findById(taskId)
+        if(!task){
+            throw new BadRequestException("task is not found")
+        }
+       //check if user already completed this task
+       const taskCompleted = await this.userTaskModel.findOne({usersId:userId.id, taskId });
+       if(taskCompleted)
+       {
+        throw new BadRequestException("task is already completed");
+       }
+       const completeTask= await this.userTaskModel.create({ usersId:userId.id,taskId})
+       return{
+          message: "Task completed successfully"
+       }
+    }
+async myCompleteTask(currentUser) {
+  const completedTasks = await this.userTaskModel
+    .find({ usersId: currentUser.id })
+    .populate('taskId');
+
+  if (completedTasks.length === 0) {
+    return  [];
+  }
+  const completeTaskRsponse :UserCompleteTask[]= completedTasks.map((item) => ({
+    taskId: item?.taskId
+  }));
+  return completeTaskRsponse
+}
 }

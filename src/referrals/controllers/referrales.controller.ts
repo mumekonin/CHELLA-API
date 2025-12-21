@@ -14,7 +14,6 @@ export class ReferralsController {
    }
     @JwtAuthGuard()
     @Get('my-referred-users') 
-
     async getMyReferredUsers(@Req() req:any){
       return await this.referralService.getMyReferredUserss(req.user);
     }

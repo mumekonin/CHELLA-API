@@ -56,7 +56,7 @@ export class ReferralService {
     async getMyReferredUserss(currentUser){
       const referrals = await this.referralModel
       .find({refferrerId: new Types.ObjectId(currentUser.id)})
-      .populate('referrerdUserId','username fullName createdAt')
+      .populate('referrerdUserId','username ','fullName' ,'createdAt')
 
       if(referrals.length === 0){ 
         return [];

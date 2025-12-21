@@ -9,7 +9,7 @@ export class Task extends Document{
 }   export const  taskSchema =SchemaFactory.createForClass(Task);
 @Schema({timestamps:true})
 export class UserTask extends Document{
-        @Prop() userId:string;
+        @Prop() usersId:string;
         @Prop() taskId:string;
         @Prop() isCompleted:boolean;
 }export const  userTaskSchema =SchemaFactory.createForClass(UserTask);

@@ -4,3 +4,7 @@ export class TaskResponse{
   rewardAmount?:number;
   taskDate?:Date;
 }
+
+export class UserCompleteTask{
+  taskId?:string;
+}

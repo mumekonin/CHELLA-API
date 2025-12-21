@@ -12,8 +12,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {//creates a custom 
         super(strategyOptions); //send the config  passport stategy constructors 
     }
     async validate(payload: any){
-        const { exp, iat, nbf, sub, ...userInfo } = payload;
+        const { exp, iat, nbf, id:sub, ...userInfo } = payload;
         console.log("🚀 ~ JwtStrategy ~ validate ~ rest:", userInfo)
-        return userInfo;
+        return {userInfo ,id:sub};
     }
 }
