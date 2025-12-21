@@ -4,11 +4,12 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReferralsModule } from './referrals/referrals.module';
 import { TransactionsModule } from './transactions/transactions.module';
-import { TasksModule } from './tasks/tasks.module';
 import { ExchangeRateModule } from './exchange-rate/exchange-rate.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './commons/guards/jwt.strategy';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { JwtStrategy } from './commons/guards/jwt.strategy';
     UsersModule, 
     ReferralsModule,
      TransactionsModule, 
-     TasksModule, 
+     TaskModule,
      ExchangeRateModule,
+     ScheduleModule.forRoot()
     ],
   controllers: [AppController],
   providers: [AppService,
