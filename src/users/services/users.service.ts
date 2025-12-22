@@ -208,5 +208,13 @@ export class UsersSrevice {
     return userResponse
 
   }
-
+  //reward mangement sevice
+ async addTaskRewardToUser(currentUserId:string, rewardAmount:number){
+        const user = await  this.userModel.findById(currentUserId);
+        if(!user){
+          throw new BadRequestException("user is not found");
+        }
+        user.totalEarned+=rewardAmount;
+        await user.save();
+ }
 }

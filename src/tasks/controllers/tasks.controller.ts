@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Req, UseGuards } from "@nestjs/common";
 import { TaskService } from "../services/tasks.service";
 import path from "node:path/win32";
 import { JwtAuthGuard } from "src/commons/guards/jwtauth.gourd";
@@ -19,17 +19,17 @@ export class TaskController{
   return result;
  }
  @JwtAuthGuard()
- @Patch('complete')
- async completeTask( @Req() req: any,@Body("taskId") taskId:string){
+ @Patch('complete/:taskId')
+ async completeTask( @Req() req: any,@Param() taskId:string){
    const userId=req.user;
    const result =await this.taskService.completeTask(userId,taskId);
    return result;
- }
+ } 
  @JwtAuthGuard()
  @Get('my-completed-tasks')
   async myCompletedTask(@Req() req:any){
    const currentUser=req.user;
-   const result =await this.taskService.myCompleteTask(currentUser)
+   const result =await this.taskService.getUserComletedTasks(currentUser)
    return result
   }
 }
