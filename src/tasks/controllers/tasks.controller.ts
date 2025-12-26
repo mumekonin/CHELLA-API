@@ -20,7 +20,8 @@ export class TaskController{
  }
  @JwtAuthGuard()
  @Patch('complete/:taskId')
- async completeTask( @Req() req: any,@Param() taskId:string){
+ async completeTask( @Req() req: any, @Param('taskId') taskId:string){
+
    const userId=req.user;
    const result =await this.taskService.completeTask(userId,taskId);
    return result;
@@ -29,7 +30,7 @@ export class TaskController{
  @Get('my-completed-tasks')
   async myCompletedTask(@Req() req:any){
    const currentUser=req.user;
-   const result =await this.taskService.getUserComletedTasks(currentUser)
+   const result =await this.taskService.getUserComletedTasks (currentUser)
    return result
   }
 }
