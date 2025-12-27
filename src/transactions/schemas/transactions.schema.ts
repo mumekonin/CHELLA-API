@@ -11,6 +11,6 @@ export class Transaction extends Document{
     @Prop() transactionType:string;
     @Prop({enum:['ETB','USD','EUR'], default:"ETB"}) currency: string;
     @Prop() status:string;
-
+    @Prop() createdAt: Date;
   
 }export const transactonSchema = SchemaFactory.createForClass(Transaction);

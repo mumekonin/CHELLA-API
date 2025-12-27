@@ -4,6 +4,8 @@ import { Transaction } from "../schemas/transactions.schema";
 import { Model } from "mongoose";
 import { User } from "src/users/schemas/users.schema";
 import { TransferDto } from "../dtos/transactions.dto";
+import { send } from "node:process";
+import { TransactionResponse } from "../responses/transactions.response";
 
 @Injectable()
 export class TransactionsService{
@@ -22,25 +24,46 @@ export class TransactionsService{
               throw new BadRequestException("reciver does not found")
             }
      //check current user if exist
-           const currentUserExists= await this.usersModule.findById(currentUser.id);
-           if(!reciverExists){
+           const senders= await this.usersModule.findById(currentUser.id);
+           if(!senders){
             throw new BadRequestException("sender does not exists")
            }
-
-           if(reciverExists.id.toString()===currentUserExists?._id.to){
-            throw new BadRequestException("impossible  to send for your self ")
+     //3. prevent self transfer
+           if(reciverExists.id.toString()===senders?._id.toString()){
+            throw new BadRequestException("You cannot transfer to yourself. ")
            }
-         
-           if(currentUser.amount<=10){
-            throw new BadRequestException("you have insufficient balance")
+     //4. check if sender has sufficient balance    
+           if(senders.totalEarned<transferDto.amount){
+            throw new BadRequestException("you have insufficient balance");
            }
-           reciverExists.totalEarned += transferDto.amount;
-           await reciverExists.save();
-          
-           currentUser.totalEarned-=transferDto.amount;
-
-           await currentUserExists?.save();
-           
-
+     //5. deduct amount from sender
+     senders.totalEarned-=transferDto.amount;
+     await senders.save();
+     //6. add amount to reciver
+     reciverExists.totalEarned+=transferDto.amount;
+     await reciverExists.save();  
+     //create transaction instance
+     const newTransaction = await this.transactionModuls.create({
+         senderId:senders._id,
+         reciverId:reciverExists._id,
+         amount:transferDto.amount,
+         status:"completed"
+     })   
+  
+     //save transaction
+     const savedTransaction = await newTransaction.save();
+   
+     const response:TransactionResponse ={
+          id: savedTransaction._id.toString(),
+            senderFullName: senders.fullName,
+            senderUsername: senders.username,
+            receiverFullName: reciverExists.fullName,
+            receiverUsername: reciverExists.username,
+            amount: savedTransaction.amount,
+            currency: savedTransaction.currency,
+            status: savedTransaction.status,
+            createdAt: savedTransaction.createdAt,  
+     }
+     return response;
   }
 }
