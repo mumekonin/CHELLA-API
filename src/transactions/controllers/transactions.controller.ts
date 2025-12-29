@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req } from "@nestjs/common";
 import { TransactionsService } from "../services/transactions.service";
 import { TransferDto } from "../dtos/transactions.dto";
 import { JwtAuthGuard } from "src/commons/guards/jwtauth.gourd";
@@ -10,9 +10,15 @@ export class TransactionsController {
    ) { }  
    @JwtAuthGuard()
    @Post("make-transaction")
-   async makeTransaction(@Req() req:any, @Body("make-transaction") transferDto:TransferDto){ 
+   async makeTransaction(@Req() req:any, @Body() transferDto:TransferDto){ 
     const currentUser = req.user;
     const result = await this.transactionsService.makeTransaction(currentUser,transferDto);
     return result;
    } 
+   @JwtAuthGuard()
+   @Get('history')
+   async getAllTransactions(@Req() req: any) {
+    const result= await this.transactionsService.getAllTransactions(req.user);
+    return result;
+  }
 }
