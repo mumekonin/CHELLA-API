@@ -1,9 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose"; 
 import { Model } from "mongoose";
 import { HttpService } from "@nestjs/axios";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { ExchangeRate } from "../schemas/rates.shema";
+import { RateConversionDto } from "../dtos/exchange-rate.dto";
+import { ConversionRespose, RateResponse } from "../responses/exchange-rate.response";
 @Injectable()
 export class ExchangeRatesService {
     constructor(
@@ -16,7 +18,7 @@ export class ExchangeRatesService {
         try {
 
                  const today = new Date().toISOString().split('T')[0];
-                 
+
                  const existingRate = await this.rateModel.findOne({
                     exchangeDate: today
                 });
@@ -53,4 +55,52 @@ export class ExchangeRatesService {
             throw new Error("Failed to fetch excahnge rate.")
         }
     }
+    async getTodayExchangeRate(){
+        const today = new Date().toISOString().split('T')[0];
+
+        const todayRate = await this.rateModel.findOne({
+            exchangeDate: today
+        });
+
+        if(!todayRate){
+            throw new Error("Today's exchange rate not found.");
+      }
+        const response :RateResponse={
+          id: todayRate._id.toString(),
+          usdRate: todayRate.usdRate,
+          eurRate: todayRate.eurRate,
+          etbRate: todayRate.etbRate,
+          exchangeDate: todayRate.exchangeDate
+        }
+        return response;
+      }
+    //service for conversion
+    async currencyConversion(rateConversionDto:RateConversionDto){
+      //fetching today exchange rate
+      const todayRate = await this.getTodayExchangeRate();
+
+      let convertedAmount: number;
+       if(rateConversionDto.fromCurrency === rateConversionDto.toCurrency){
+          convertedAmount = rateConversionDto.amount;
+       }
+
+       //ETB to USD
+       else if(rateConversionDto.fromCurrency === 'ETB' && rateConversionDto.toCurrency === 'USD'){
+          convertedAmount = rateConversionDto.amount * todayRate.usdRate;
+       }
+
+       else if(rateConversionDto.fromCurrency === 'ETB' && rateConversionDto.toCurrency === 'EUR'){
+          convertedAmount = rateConversionDto.amount * todayRate.eurRate;
+       }else{
+           throw new BadRequestException("Conversion from USD or EUR to ETB is not supported yet.");
+       }
+
+       const response:ConversionRespose={
+          fromCurrency: rateConversionDto.fromCurrency,
+          toCurrency: rateConversionDto.toCurrency,
+          Amount: convertedAmount
+       }
+        return response;
+    }
+
 }

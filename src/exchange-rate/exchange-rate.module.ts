@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ExchangeRate, exchangeRateSchema } from './schemas/rates.shema';
 import { HttpModule } from '@nestjs/axios';
 import { ExchangeRatesService } from './services/exchange-rate.service';
+import { ExchangeRateController } from './controllers/exchange-rate.controller';
 
 
 @Module({
@@ -14,7 +15,7 @@ import { ExchangeRatesService } from './services/exchange-rate.service';
         HttpModule
     ],
 
-    controllers: [],
+    controllers: [ ExchangeRateController],
 
     providers: [
         ExchangeRatesService
