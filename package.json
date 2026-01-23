@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -29,6 +30,7 @@
     "@nestjs/schedule": "^6.1.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/passport-jwt": "^4.0.1",
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "class-transform": "^0.7.1",
     "class-transformer": "^0.5.1",
