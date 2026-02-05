@@ -1,4 +1,4 @@
-🎉 Chella - Reward App Backend
+🎉 CHELLA-API - Reward App Backend
 
 Chella is a reward-based application backend built with NestJS, MongoDB, and REST APIs. The app allows users to register, earn referral rewards, complete daily tasks, and manage multi-currency transactions.
 
