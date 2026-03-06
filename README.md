@@ -1,118 +1,55 @@
-🎉 CHELLA-API - Reward App Backend
+# 🎉 CHELLA-API — Reward App Backend
 
-Chella is a reward-based application backend built with NestJS, MongoDB, and REST APIs. The app allows users to register, earn referral rewards, complete daily tasks, and manage multi-currency transactions.
+A reward-based application backend built with **NestJS** and **MongoDB**. Users can register, earn referral rewards, complete daily tasks, and manage multi-currency transactions.
 
-✨ Features
+---
 
-👤 User Management
+## ✨ Features
 
-  - Register and login with username and password
+**👤 User Management**
+- Register and login with username and password
+- Automatic signup bonus of 100 ETB 💰
+- Unique referral code generation and tracking 🔑
 
-  - Automatic signup bonus of 100 ETB 💰
+**🤝 Referral System**
+- Refer others using a unique referral code
+- Rewards automatically credited to both referrer and referee 🎁
 
-  - Unique referral code generation and tracking 🔑
+**📋 Task Management**
+- Daily tasks automatically generated using a **Cron Job** ✅
+- Task completion updates user balance 💵
 
-🤝 Referral Management
+**💳 Transactions & Multi-Currency**
+- Transfer money between users 💸
+- Supports ETB, USD, and EUR with live rates from **Exchange Rate API** 🌍
+- Transaction history with min/max transfer validation 📊
 
-  - Users can refer others using a unique referral code
+---
 
-  - Referral rewards automatically credited to both referrer and referee 🎁
+## 🛠️ Tech Stack
 
-📋 Task Management
+| Tool | Purpose |
+|------|---------|
+| NestJS | Backend framework |
+| MongoDB | Database |
+| JWT | Authentication & Authorization |
+| Cron Job | Automated daily task creation |
+| Exchange Rate API | Real-time currency conversion |
+| REST API | Communication layer |
+| Git & GitHub | Version control |
 
-  - Daily tasks available for users ✅
+---
 
-  - Task completion updates user balance 💵
-
-💳 Transactions & Multi-Currency Support
-
-  - Users can transfer money to others 💸
-
-  - Supports ETB, USD, and EUR with real-time balance updates 🌍
-
-  - Transaction history and validation for min/max transfer limits 📊
-
-🛠️ Tech Stack
-
-  - Backend Framework: NestJS ⚡
-
-  - Database: MongoDB 🍃
-
-  - API: RESTful APIs 🌐
-
-  - Other Tools: Git & GitHub 🐙
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## 🚀 Setup & Running
 
 ```bash
-$ npm install
+# Install dependencies
+npm install
+
+# Development
+npm run start:dev
+
+# Production
+npm run start:prod
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
